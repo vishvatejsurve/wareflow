@@ -58,4 +58,18 @@ public class Product {
 
     @OneToMany(mappedBy = "product")
     private List<PurchaseOrderItem> purchaseOrderItems;
+
+    @PrePersist
+    public void onCreate()
+    {
+        createdAt =LocalDateTime.now();
+        updatedAt =LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+
+
 }

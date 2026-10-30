@@ -37,4 +37,10 @@ public class Supplier {
     @OneToMany(mappedBy = "supplier")
     private List<PurchaseOrder> purchaseOrders;
 
+    @PrePersist
+    public  void  onCreate()
+    {
+        createdAt =LocalDateTime.now();
+    }
+
 }
