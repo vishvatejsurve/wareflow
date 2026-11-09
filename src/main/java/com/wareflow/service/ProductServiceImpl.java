@@ -4,6 +4,8 @@ import com.wareflow.dto.ProductRequestDTO;
 import com.wareflow.dto.ProductResponseDTO;
 import com.wareflow.entity.Product;
 import com.wareflow.entity.Supplier;
+import com.wareflow.exception.ProductNotFoundException;
+import com.wareflow.exception.SupplierNotFoundException;
 import com.wareflow.mapper.ProductMapper;
 import com.wareflow.repository.ProductRepository;
 import com.wareflow.repository.SupplierRepository;
@@ -25,7 +27,7 @@ public class ProductServiceImpl implements ProductService{
     public ProductResponseDTO createProduct(ProductRequestDTO requestDTO) {
         Product product= mapper.toEntity(requestDTO);
         Supplier supplier = supplierRepository.findById(requestDTO.getSupplierId())
-                .orElseThrow(() -> new RuntimeException("Supplier not found"));
+                .orElseThrow(() -> new SupplierNotFoundException("Supplier not Found"));
 
         product.setSupplier(supplier);
 
@@ -36,7 +38,7 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public ProductResponseDTO getProductById(Long id) {
-        Product product= productRepository.findById(id).orElseThrow(()->new RuntimeException("Product not found"));
+        Product product= productRepository.findById(id).orElseThrow(()->new ProductNotFoundException("Product not found"));
         return mapper.toResponseDto(product);
     }
 
@@ -59,7 +61,7 @@ public class ProductServiceImpl implements ProductService{
         product.setPrice(request.getPrice());
         product.setQuantity(request.getQuantity());
         product.setReorderLevel(request.getReorderLevel());
-        Supplier supplier = supplierRepository.findById(request.getSupplierId()).orElseThrow(()->new RuntimeException("Supplier not found"));
+        Supplier supplier = supplierRepository.findById(request.getSupplierId()).orElseThrow(()->new SupplierNotFoundException("Supplier not found"));
         product.setSupplier(supplier);
 
         Product updatedProduct = productRepository.save(product);
@@ -69,7 +71,7 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public void deleteProduct(Long id) {
-            Product product = productRepository.findById(id).orElseThrow(()->new RuntimeException("Product not found"));
+            Product product = productRepository.findById(id).orElseThrow(()->new ProductNotFoundException("Product not found"));
             productRepository.delete(product);
     }
 }

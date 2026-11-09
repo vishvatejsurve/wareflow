@@ -3,6 +3,7 @@ package com.wareflow.service;
 import com.wareflow.dto.SupplierRequestDTO;
 import com.wareflow.dto.SupplierResponseDTO;
 import com.wareflow.entity.Supplier;
+import com.wareflow.exception.SupplierNotFoundException;
 import com.wareflow.mapper.SupplierMapper;
 import com.wareflow.repository.SupplierRepository;
 import lombok.RequiredArgsConstructor;
@@ -37,13 +38,13 @@ public class SupplierServiceImpl implements SupplierService{
 
     @Override
     public SupplierResponseDTO getSupplierById(Long id) {
-        Supplier supplier = supplierRepository.findById(id).orElseThrow(() -> new RuntimeException("Supplier is not found"));
+        Supplier supplier = supplierRepository.findById(id).orElseThrow(() -> new SupplierNotFoundException("Supplier is not found"));
         return supplierMapper.toResponse(supplier);
     }
 
     @Override
     public SupplierResponseDTO updateSupplier(Long id, SupplierRequestDTO requestDTO) {
-        Supplier supplier = supplierRepository.findById(id).orElseThrow(() -> new RuntimeException("Supplier is not found"));
+        Supplier supplier = supplierRepository.findById(id).orElseThrow(() -> new SupplierNotFoundException("Supplier is not found"));
         supplier.setName(requestDTO.getName());
         supplier.setEmail(requestDTO.getEmail());
         supplier.setPhone(requestDTO.getPhone());
@@ -54,7 +55,7 @@ public class SupplierServiceImpl implements SupplierService{
 
     @Override
     public void deleteSupplierById(Long id) {
-       Supplier supplier = supplierRepository.findById(id).orElseThrow(()->new RuntimeException("Supplier is not found"));
+       Supplier supplier = supplierRepository.findById(id).orElseThrow(()->new SupplierNotFoundException("Supplier is not found"));
        supplierRepository.delete(supplier);
     }
 }
