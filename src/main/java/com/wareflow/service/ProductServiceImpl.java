@@ -10,6 +10,8 @@ import com.wareflow.mapper.ProductMapper;
 import com.wareflow.repository.ProductRepository;
 import com.wareflow.repository.SupplierRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -73,5 +75,17 @@ public class ProductServiceImpl implements ProductService{
     public void deleteProduct(Long id) {
             Product product = productRepository.findById(id).orElseThrow(()->new ProductNotFoundException("Product not found"));
             productRepository.delete(product);
+    }
+
+    @Override
+    public Page<ProductResponseDTO> getAllProducts(Pageable pageable) {
+        return productRepository.findAll(pageable)
+                .map(mapper::toResponseDto);
+    }
+
+    @Override
+    public Page<ProductResponseDTO> searchProductByName(String name, Pageable pageable) {
+        return productRepository.findByNameContainingIgnoreCase(name,pageable)
+                .map(mapper::toResponseDto);
     }
 }

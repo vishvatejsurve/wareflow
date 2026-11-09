@@ -5,6 +5,8 @@ import com.wareflow.dto.ProductResponseDTO;
 import com.wareflow.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,11 +33,6 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(productResponseDTO);
     }
 
-    @GetMapping
-    public ResponseEntity<List<ProductResponseDTO>> getAllProducts()
-    {
-        return ResponseEntity.ok().body(productService.getAllProducts());
-    }
 
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponseDTO> updateProduct(@PathVariable Long id,@RequestBody @Valid ProductRequestDTO productRequestDTO)
@@ -49,5 +46,16 @@ public class ProductController {
     {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<ProductResponseDTO>> getAllProducts(Pageable pageable)
+    {
+        return ResponseEntity.ok(productService.getAllProducts(pageable));
+    }
+    @GetMapping("/search")
+    public ResponseEntity<Page<ProductResponseDTO>> searchProductByName(@RequestParam String name,Pageable pageable)
+    {
+        return ResponseEntity.ok(productService.searchProductByName(name, pageable));
     }
 }
